@@ -28,7 +28,7 @@ namespace OdToFood
 
             app.Run(async (context) =>
             {
-				var greeting = configuration["Greeting"];
+		var greeting = configuration["Greeting"];
                 await context.Response.WriteAsync(greeting);
             });
         }
