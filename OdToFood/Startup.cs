@@ -23,39 +23,24 @@ namespace OdToFood
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IGreeter greeter, ILogger<Startup> logger)
         {
-			//if (env.IsDevelopment())
-			//{
-			//    app.UseDeveloperExceptionPage();
-			//}
-
-			app.Use(next =>
+			if (env.IsDevelopment())
 			{
-				return async context =>
-				{
-					logger.LogInformation("Request incoming...");
-					if (context.Request.Path.StartsWithSegments("/my"))
-					{
-						await context.Response.WriteAsync("Hello in my Middlware");
-						logger.LogInformation("Request handler in my middlware...");
-					}
-					else
-					{
-						await next(context);
-						logger.LogInformation("Request outgoing...");
-					}
-						
-				};
-			});
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler();
+			}
 
-			app.UseWelcomePage(new WelcomePageOptions {
-				Path = "/wp",
-			});
+			
+			app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> {"htmlpage.html" } });
+			app.UseStaticFiles();
 
-            app.Run(async (context) =>
-            {
-				var greeting = greeter.GetMessageOfTheDay();
-                await context.Response.WriteAsync(greeting);
-            });
+
+			app.Run(async context =>
+			{
+				await context.Response.WriteAsync(greeter.GetMessageOfTheDay());
+			});
         }
     }
 }
